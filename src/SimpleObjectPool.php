@@ -6,7 +6,7 @@
  * Time: 下午7:17
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class SimpleObjectPool

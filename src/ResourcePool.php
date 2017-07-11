@@ -6,7 +6,7 @@
  * Time: 上午9:31
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class ResourcePool - 资源池

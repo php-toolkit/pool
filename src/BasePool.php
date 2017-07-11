@@ -6,7 +6,7 @@
  * Time: 下午1:43
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 use inhere\library\StdObject;
 use inhere\queue\PhpQueue;
@@ -14,7 +14,7 @@ use inhere\queue\QueueInterface;
 
 /**
  * Class BasePool
- * @package inhere\library\process\pool
+ * @package inhere\pool
  */
 abstract class BasePool extends StdObject implements PoolInterface
 {

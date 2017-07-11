@@ -13,7 +13,8 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    "inhere/queue": "dev-master"
   },
   "autoload": {
     "psr-4": {

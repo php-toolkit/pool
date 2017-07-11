@@ -6,13 +6,13 @@
  * Time: 下午1:50
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class ResourcePool3
  * - 需要继承它，在自己的子类实现资源的创建和销毁
  *
- * @package inhere\library\process\pool
+ * @package inhere\pool
  */
 abstract class ResourcePool3 extends BasePool implements ResourceInterface
 {

@@ -7,7 +7,7 @@
  */
 require __DIR__ . '/s-autoload.php';
 
-use inhere\library\process\pool\ResourcePool;
+use inhere\pool\ResourcePool;
 
 $rpl = new ResourcePool([
     'initSize' => 2,

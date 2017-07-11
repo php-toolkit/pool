@@ -31,3 +31,51 @@
 git clone https://git.oschina.net/inhere/php-resource-pool.git // git@osc
 git clone https://github.com/inhere/php-resource-pool.git // github
 ```
+
+## 使用
+
+```php
+
+use inhere\pool\ResourcePool;
+
+$rpl = new ResourcePool([
+    'initSize' => 2,
+    'maxSize' => 2,
+    'driverOptions' => [
+
+    ],
+]);
+
+$rpl->setCreator(function () {
+    $obj = new \stdClass();
+    $obj->name = 'test';
+
+    return $obj;
+})
+    ->setDestroyer(function ($obj) {
+    echo "call resource destroyer.\n";
+});
+
+var_dump($rpl);
+
+$obj1 = $rpl->get();
+$obj2 = $rpl->get();
+$obj3 = $rpl->get();
+
+var_dump($obj1, $obj2, $obj3,$rpl);
+
+$rpl->put($obj1);
+$rpl->put($obj2);
+
+var_dump($rpl);
+
+$rpl->call(function ($obj) {
+   echo " $obj->name\n";
+});
+
+var_dump($rpl);
+```
+
+## License
+
+MIT

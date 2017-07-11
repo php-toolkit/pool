@@ -6,11 +6,11 @@
  * Time: 下午7:16
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class PoolInterface
- * @package inhere\library\process\pool
+ * @package inhere\pool
  */
 interface PoolInterface
 {

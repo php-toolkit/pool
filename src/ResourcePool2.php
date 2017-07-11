@@ -6,13 +6,13 @@
  * Time: 下午1:50
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class ResourcePool2
  * - 通过设置的资源工厂类实现资源的创建和销毁
  *
- * @package inhere\library\process\pool
+ * @package inhere\pool
  */
 class ResourcePool2 extends BasePool
 {

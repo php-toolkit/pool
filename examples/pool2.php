@@ -7,9 +7,9 @@
  */
 require __DIR__ . '/s-autoload.php';
 
-use inhere\library\process\pool\SimpleObjectPool;
+use inhere\pool\SimpleObjectPool;
 
-class TestObj implements \inhere\library\process\pool\ResourceInterface
+class TestObj implements \inhere\pool\ResourceInterface
 {
     public function create()
     {

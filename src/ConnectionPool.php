@@ -6,11 +6,11 @@
  * Time: 上午12:54
  */
 
-namespace inhere\library\process\pool;
+namespace inhere\pool;
 
 /**
  * Class ConnectionPool
- * @package inhere\library\process\pool
+ * @package inhere\pool
  */
 class ConnectionPool
 {
