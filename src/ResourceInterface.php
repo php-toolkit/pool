@@ -6,15 +6,22 @@
  * Time: 下午7:16
  */
 
-namespace inhere\pool;
+namespace Inhere\Pool;
 
 /**
  * Class ResourceInterface - resource factory interface
- * @package inhere\pool
+ * @package Inhere\Pool
  */
 interface ResourceInterface
 {
+    /**
+     * @return mixed
+     */
     public function create();
 
+    /**
+     * @param \stdClass $obj the resource object
+     * @return mixed
+     */
     public function destroy($obj);
 }

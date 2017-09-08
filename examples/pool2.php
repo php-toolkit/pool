@@ -7,9 +7,9 @@
  */
 require __DIR__ . '/s-autoload.php';
 
-use inhere\pool\SimpleObjectPool;
+use Inhere\Pool\UnlimitedPool;
 
-class TestObj implements \inhere\pool\ResourceInterface
+class TestObj implements \Inhere\Pool\ResourceInterface
 {
     public function create()
     {
@@ -25,7 +25,7 @@ class TestObj implements \inhere\pool\ResourceInterface
     }
 }
 
-$spl = new SimpleObjectPool(new TestObj());
+$spl = new UnlimitedPool(new TestObj());
 
 $obj1 = $spl->get();
 $obj2 = $spl->get();

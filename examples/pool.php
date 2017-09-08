@@ -7,14 +7,11 @@
  */
 require __DIR__ . '/s-autoload.php';
 
-use inhere\pool\ResourcePool;
+use Inhere\Pool\Raw\ResourcePool;
 
 $rpl = new ResourcePool([
     'initSize' => 2,
-    'maxSize' => 2,
-    'driverOptions' => [
-
-    ],
+    'maxSize' => 2
 ]);
 
 $rpl->setCreator(function () {

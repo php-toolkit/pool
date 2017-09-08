@@ -6,13 +6,13 @@
  * Time: 下午7:17
  */
 
-namespace inhere\pool;
+namespace Inhere\Pool;
 
 /**
- * Class SimpleObjectPool
+ * Class UnlimitedPool - 无(大小)限制的资源池， 没有资源就创建
  * @package inhere\library\process
  */
-class SimpleObjectPool implements PoolInterface
+class UnlimitedPool implements PoolInterface
 {
     /**
      * @var ResourceInterface
@@ -37,7 +37,7 @@ class SimpleObjectPool implements PoolInterface
     /**
      * {@inheritdoc}
      */
-    public function get($blocking = false)
+    public function get($waiting = false)
     {
         if (!$this->pool->isEmpty()) {
             return $this->pool->pop();

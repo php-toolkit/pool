@@ -6,20 +6,20 @@
  * Time: 下午7:16
  */
 
-namespace inhere\pool;
+namespace Inhere\Pool;
 
 /**
  * Class PoolInterface
- * @package inhere\pool
+ * @package Inhere\Pool
  */
 interface PoolInterface
 {
     /**
      * 获取资源
-     * @param bool $blocking 是否阻塞，当没有资源可用时
+     * @param bool $waiting 是否等待，当没有资源可用时
      * @return mixed
      */
-    public function get($blocking = false);
+    public function get($waiting = null);
 
     /**
      * 返还资源到资源池

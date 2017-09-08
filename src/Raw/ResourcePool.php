@@ -6,7 +6,9 @@
  * Time: 上午9:31
  */
 
-namespace inhere\pool;
+namespace Inhere\Pool\Raw;
+
+use Inhere\Pool\PoolAbstracter;
 
 /**
  * Class ResourcePool - 资源池
@@ -33,9 +35,9 @@ namespace inhere\pool;
  * $rpl->put($db);
  * ```
  *
- * @package inhere\library\process
+ * @package Inhere\Pool\Raw
  */
-class ResourcePool extends BasePool
+class ResourcePool extends PoolAbstracter
 {
     /**
      * 资源创建者
@@ -44,30 +46,42 @@ class ResourcePool extends BasePool
     private $creator;
 
     /**
-     * 资源销毁/释放者
+     * 资源销毁者
      * @var \Closure
      */
     private $destroyer;
 
-    /**
-     * (创建)准备资源
-     * @param int $size
-     * @return int
-     */
-    public function prepare($size)
+    protected function init()
     {
-        if ($size <= 0) {
-            return 0;
+        parent::init();
+
+        if ($this->creator) {
+            $this->prepare($this->getInitSize());
+        }
+    }
+
+    /**
+     * 等待并返回可用资源
+     * @return bool|mixed
+     */
+    protected function waitingAndGet()
+    {
+        $timer = 0;
+        $timeout = $this->getTimeout();
+        $interval = 50;
+        $uSleep = $interval * 1000;
+
+        while ($timer <= $timeout) {
+            // 等到了可用的空闲资源
+            if ($res = $this->getFreeQueue()->pop()) {
+                return $res;
+            }
+
+            $timer += $interval;
+            usleep($uSleep);
         }
 
-        $cb = $this->creator;
-
-        for ($i = 0; $i < $size; $i++) {
-            $this->incrementCreatedNumber();
-            $this->getPool()->push($cb());
-        }
-
-        return $size;
+        return false;
     }
 
     /**
@@ -75,13 +89,22 @@ class ResourcePool extends BasePool
      */
     public function clear()
     {
-        if ($cb = $this->destroyer) {
-            while ($obj = $this->getPool()->pop()) {
-                $cb($obj);
-            }
-        }
+        $this->destroyer = $this->creator = null;
 
         parent::clear();
+    }
+
+    public function create()
+    {
+        $cb = $this->creator;
+
+        return $cb();
+    }
+
+    public function destroy($resource)
+    {
+        $cb = $this->destroyer;
+        $cb($resource);
     }
 
     /**
