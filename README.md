@@ -36,7 +36,7 @@ git clone https://github.com/inhere/php-resource-pool.git // github
 
 ```php
 
-use inhere\pool\ResourcePool;
+use Inhere\Pool\Raw\ResourcePool;
 
 $rpl = new ResourcePool([
     'initSize' => 2,

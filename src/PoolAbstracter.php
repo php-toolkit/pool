@@ -64,13 +64,24 @@ abstract class PoolAbstracter implements PoolInterface
     private $timeout = 1000;
 
     /**
+     * 自定义的资源配置(创建资源对象时可能会用到 e.g mysql 连接配置)
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * StdObject constructor.
      * @param array $config
+     * @param array $options
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], array $options = [])
     {
         foreach ($config as $property => $value) {
             $this->$property = $value;
+        }
+
+        if ($options) {
+            $this->setOptions($options);
         }
 
         $this->init();
@@ -169,11 +180,11 @@ abstract class PoolAbstracter implements PoolInterface
             return 0;
         }
 
-//        for ($i = 0; $i < $size; $i++) {
+        for ($i = 0; $i < $size; $i++) {
             $res = $this->create();
-            var_dump($i, $size, $res);
+//            var_dump($i, $size, $res);
             $this->getFreeQueue()->push($res);
-//        }
+        }
 
         return $size;
     }
@@ -397,5 +408,21 @@ abstract class PoolAbstracter implements PoolInterface
     public function setTimeout(int $timeout)
     {
         $this->timeout = $timeout;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 }
