@@ -25,13 +25,19 @@ class UnlimitedPool implements PoolInterface
     private $pool;
 
     /**
+     * @var int
+     */
+    private $maxSize;
+
+    /**
      * SimpleObjectPool constructor.
      * @param ResourceInterface $objectFactory
      */
-    public function __construct(ResourceInterface $objectFactory)
+    public function __construct(ResourceInterface $objectFactory, $maxSize = 100)
     {
         $this->objectFactory = $objectFactory;
         $this->pool = new \SplQueue();
+        $this->maxSize = $maxSize;
     }
 
     /**
@@ -43,6 +49,10 @@ class UnlimitedPool implements PoolInterface
             return $this->pool->pop();
         }
 
+        if ($this->maxSize > 0 && $this->count() >= $this->maxSize) {
+            throw new \RuntimeException("The created resource has been overflow max value: {$this->maxSize}");
+        }
+
         return $this->objectFactory->create();
     }
 
@@ -52,6 +62,14 @@ class UnlimitedPool implements PoolInterface
     public function put($obj)
     {
         $this->pool->push($obj);
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->pool->count();
     }
 
     /**
