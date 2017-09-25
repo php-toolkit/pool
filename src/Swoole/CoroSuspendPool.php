@@ -15,7 +15,7 @@ use Swoole\Coroutine;
  * Class ResourcePool - by Coroutine implement
  * @package Inhere\Pool\Swoole
  */
-abstract class ResourcePool extends PoolAbstracter
+abstract class CoroSuspendPool extends PoolAbstracter
 {
     /**
      * @var \SplQueue
@@ -43,12 +43,12 @@ abstract class ResourcePool extends PoolAbstracter
      */
     protected function waitingAndGet()
     {
-        // 无空闲资源可用， 挂起协程
         $coId = Coroutine::getuid();
 
         // 保存等待的协程ID
         $this->waitingQueue->push($coId);
 
+        // 无空闲资源可用， 挂起协程
         Coroutine::suspend($coId);
 
         // 恢复后， 返回可用资源

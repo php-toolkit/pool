@@ -5,13 +5,13 @@
  * Date: 2017-09-08
  * Time: 14:48
  */
-use Inhere\Pool\Swoole\ResourcePool;
+use Inhere\Pool\Swoole\CoroSuspendPool;
 use Swoole\Http\Response;
 
 require __DIR__ . '/s-autoload.php';
 
 
-class MysqlPoolTest extends ResourcePool
+class MysqlPoolTest extends CoroSuspendPool
 {
     /**
      * 创建新的资源实例
