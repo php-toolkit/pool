@@ -10,7 +10,7 @@ namespace Inhere\Pool;
 
 /**
  * Class UnlimitedPool - 无(大小)限制的资源池， 没有资源就创建
- * @package inhere\library\process
+ * @package Inhere\Library\process
  */
 class UnlimitedPool implements PoolInterface
 {
