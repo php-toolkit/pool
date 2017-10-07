@@ -35,10 +35,14 @@ class ObjectPool
     }
 
     /**
-     * @param \stdClass $object
+     * @param \stdClass|string $object
      */
     public static function put($object)
     {
+        if (is_string($object)) {
+            $object = new $object;
+        }
+
         self::getStack($object)->push($object);
     }
 
