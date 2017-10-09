@@ -47,6 +47,22 @@ class ObjectPool
     }
 
     /**
+     * @param string $class
+     * @param \Closure $handler
+     * @return mixed
+     */
+    public static function use($class, \Closure $handler)
+    {
+        $obj = self::get($class);
+
+        $ret = $handler($obj);
+
+        self::put($obj);
+
+        return $ret;
+    }
+
+    /**
      * @param string|\stdClass $class
      * @return \SplStack
      */
