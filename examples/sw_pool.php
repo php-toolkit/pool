@@ -5,10 +5,11 @@
  * Date: 2017-09-08
  * Time: 14:48
  */
+
 use Inhere\Pool\Swoole\CoroSuspendPool;
 use Swoole\Http\Response;
 
-require __DIR__ . '/s-autoload.php';
+require dirname(__DIR__) . '/tests/boot.php';
 
 
 class MysqlPoolTest extends CoroSuspendPool
@@ -46,7 +47,7 @@ class MysqlPoolTest extends CoroSuspendPool
 
 $pool = new \MysqlPoolTest([
     'initSize' => 0,
-    'maxSize' => 1,
+    'maxSize' => 20,
 ]);
 
 $host = '127.0.0.1';
@@ -56,9 +57,24 @@ $svr = new \Swoole\Http\Server($host, $port);
 echo "server run on {$host}:{$port}\n";
 
 $svr->on('request', function ($req, Response $res) use($pool) {
-    $db = $pool->get();
+    // $db = $pool->get();
 
-    $data = $db->query('show tables');
+    try {
+        $db = new Swoole\Coroutine\MySQL();
+        $db->connect([
+            'host' => 'mysql',
+            'port' => 3306,
+            'user' => 'root',
+            'password' => 'password',
+            'database' => 'test',
+        ]);
+        $data = $db->query('show tables');
+    } catch (\Throwable $e) {
+        var_dump($e->getMessage());
+    }
+
+    // $db = new PDO('mysql:dbname=test;host=mysql;port=3306;charset=UTF8', 'root', 'password');
+    // $data = $db->query('show tables')->fetchAll();
 
     var_dump($data);
 

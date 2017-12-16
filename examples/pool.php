@@ -5,9 +5,10 @@
  * Date: 2017/6/25
  * Time: 上午10:53
  */
-require __DIR__ . '/s-autoload.php';
 
 use Inhere\Pool\Raw\ResourcePool;
+
+require dirname(__DIR__) . '/tests/boot.php';
 
 $rpl = new ResourcePool([
     'initSize' => 2,

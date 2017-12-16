@@ -10,13 +10,12 @@ ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 date_default_timezone_set('Asia/Shanghai');
 
-spl_autoload_register(function($class)
-{
-    $inhereDir = dirname(__DIR__, 2);
-    $map = [
-        'Inhere\Pool\\' => $inhereDir . '/pool/src',
-    ];
+$inhereDir = dirname(__DIR__, 2);
+$map = [
+    'Inhere\Pool\\' => dirname(__DIR__) . '/src',
+];
 
+spl_autoload_register(function($class) use ($map) {
     foreach ($map as $np => $dir) {
         if (0 === strpos($class, $np)) {
             $path = str_replace('\\', '/', substr($class, strlen($np)));
