@@ -11,7 +11,7 @@ use Inhere\Pool\UnlimitedPool;
 require dirname(__DIR__) . '/tests/boot.php';
 
 
-class TestObj implements \Inhere\Pool\ResourceInterface
+class TestObj implements \Inhere\Pool\FactoryInterface
 {
     public function create()
     {

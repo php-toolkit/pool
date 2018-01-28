@@ -15,7 +15,7 @@ namespace Inhere\Pool;
 class UnlimitedPool implements PoolInterface
 {
     /**
-     * @var ResourceInterface
+     * @var FactoryInterface
      */
     private $objectFactory;
 
@@ -31,9 +31,10 @@ class UnlimitedPool implements PoolInterface
 
     /**
      * SimpleObjectPool constructor.
-     * @param ResourceInterface $objectFactory
+     * @param FactoryInterface $objectFactory
+     * @param int $maxSize
      */
-    public function __construct(ResourceInterface $objectFactory, $maxSize = 100)
+    public function __construct(FactoryInterface $objectFactory, int $maxSize = 100)
     {
         $this->objectFactory = $objectFactory;
         $this->pool = new \SplQueue();
@@ -67,15 +68,15 @@ class UnlimitedPool implements PoolInterface
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return $this->pool->count();
     }
 
     /**
-     * @return ResourceInterface
+     * @return FactoryInterface
      */
-    public function getObjectFactory()
+    public function getObjectFactory(): FactoryInterface
     {
         return $this->objectFactory;
     }
@@ -84,6 +85,14 @@ class UnlimitedPool implements PoolInterface
      * release pool
      */
     public function __destruct()
+    {
+        $this->clear();
+    }
+
+    /**
+     * Empty the resource pool - Release all connections
+     */
+    public function clear()
     {
         foreach ($this->pool as $obj) {
             $this->objectFactory->destroy($obj);

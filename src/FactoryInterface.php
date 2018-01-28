@@ -9,10 +9,10 @@
 namespace Inhere\Pool;
 
 /**
- * Class ResourceInterface - resource factory interface
+ * Class FactoryInterface - resource factory interface
  * @package Inhere\Pool
  */
-interface ResourceInterface
+interface FactoryInterface
 {
     /**
      * @return mixed

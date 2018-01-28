@@ -14,16 +14,16 @@ namespace Inhere\Pool;
  *
  * @package Inhere\Pool
  */
-abstract class PoolAbstracter implements PoolInterface
+abstract class AbstractPool implements PoolInterface
 {
     /**
-     * (空闲)可用的资源队列
+     * (Free) available resource queue
      * @var \SplQueue
      */
     private $freeQueue;
 
     /**
-     * (繁忙)使用中的资源
+     * (Busy) in use resource
      * @var \SplObjectStorage
      */
     private $busyQueue;
@@ -35,7 +35,7 @@ abstract class PoolAbstracter implements PoolInterface
     public $expireTime = 30;
 
     /**
-     * 初始化池大小
+     * Initialize the pool size
      * @var int
      */
     private $initSize = 0;
@@ -47,7 +47,7 @@ abstract class PoolAbstracter implements PoolInterface
     private $stepSize = 1;
 
     /**
-     * 池最大资源数大小
+     * The maximum size of the pool resources
      * @var int
      */
     private $maxSize = 100;
@@ -213,7 +213,7 @@ abstract class PoolAbstracter implements PoolInterface
 
     /**
      * 验证对象有效性
-     * @param $obj
+     * @param mixed $obj
      * @return bool
      */
     protected function validate($obj): bool
@@ -226,7 +226,7 @@ abstract class PoolAbstracter implements PoolInterface
      */
     public function count(): int
     {
-        return count($this->busyQueue) + count($this->freeQueue);
+        return \count($this->busyQueue) + \count($this->freeQueue);
     }
 
     /**

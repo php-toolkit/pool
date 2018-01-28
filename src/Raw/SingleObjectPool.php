@@ -25,17 +25,24 @@ class SingleObjectPool
     private $class;
 
     /**
+     * @var object
+     */
+    private $basicObject;
+
+    /**
      * SingleObjectPool constructor.
      * @param $class
      */
     public function __construct($class)
     {
         $this->class = $class;
+        $this->basicObject = new $class;
     }
 
     public function __destruct()
     {
         $this->class = null;
+        $this->basicObject = null;
         $this->instances = [];
     }
 
@@ -44,13 +51,11 @@ class SingleObjectPool
      */
     public function get()
     {
-        if (count($this->instances) > 0) {
+        if (\count($this->instances) > 0) {
             return array_pop($this->instances);
         }
 
-        $class = $this->class;
-
-        return new $class();
+        return clone $this->basicObject;
     }
 
     /**

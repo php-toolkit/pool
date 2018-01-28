@@ -15,15 +15,20 @@ namespace Inhere\Pool;
 interface PoolInterface
 {
     /**
-     * 获取资源
+     * Access to resource
      * @param bool $waiting 是否等待，当没有资源可用时
      * @return mixed
      */
     public function get($waiting = null);
 
     /**
-     * 返还资源到资源池
+     * Return resource to the pool
      * @param mixed $resource
      */
     public function put($resource);
+
+    /**
+     * Empty the resource pool - Release all connections
+     */
+    public function clear();
 }

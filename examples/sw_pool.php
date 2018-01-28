@@ -6,13 +6,13 @@
  * Time: 14:48
  */
 
-use Inhere\Pool\Swoole\CoroSuspendPool;
+use Inhere\Pool\Swoole\CorSuspendPool;
 use Swoole\Http\Response;
 
 require dirname(__DIR__) . '/tests/boot.php';
 
 
-class MysqlPoolTest extends CoroSuspendPool
+class MysqlPoolTest extends CorSuspendPool
 {
     /**
      * 创建新的资源实例

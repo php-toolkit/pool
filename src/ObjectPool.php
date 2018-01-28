@@ -10,7 +10,7 @@ namespace Inhere\Pool;
 
 /**
  * Class ObjPool
- * @package Sws\Components
+ * @package Inhere\Pool
  */
 class ObjectPool
 {
@@ -39,7 +39,7 @@ class ObjectPool
      */
     public static function put($object)
     {
-        if (is_string($object)) {
+        if (\is_string($object)) {
             $object = new $object;
         }
 
@@ -51,7 +51,7 @@ class ObjectPool
      * @param \Closure $handler
      * @return mixed
      */
-    public static function use($class, \Closure $handler)
+    public static function call($class, \Closure $handler)
     {
         $obj = self::get($class);
 
@@ -66,9 +66,9 @@ class ObjectPool
      * @param string|\stdClass $class
      * @return \SplStack
      */
-    public static function getStack($class)
+    public static function getStack($class): \SplStack
     {
-        $class = is_string($class) ? $class : get_class($class);
+        $class = \is_string($class) ? $class : \get_class($class);
 
         if (!isset(self::$pool[$class])) {
             self::$pool[$class] = new \SplStack();
@@ -81,7 +81,7 @@ class ObjectPool
      * @param null $class
      * @return int
      */
-    public static function count($class = null)
+    public static function count($class = null): int
     {
         if ($class) {
             if (!isset(self::$pool[$class])) {
@@ -91,7 +91,7 @@ class ObjectPool
             return self::$pool[$class]->count();
         }
 
-        return count(self::$pool);
+        return \count(self::$pool);
     }
 
     /**

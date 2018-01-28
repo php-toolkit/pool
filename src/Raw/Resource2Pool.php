@@ -8,8 +8,8 @@
 
 namespace Inhere\Pool\Raw;
 
-use Inhere\Pool\PoolAbstracter;
-use Inhere\Pool\ResourceInterface;
+use Inhere\Pool\AbstractPool;
+use Inhere\Pool\FactoryInterface;
 
 /**
  * Class ResourcePool2
@@ -17,10 +17,10 @@ use Inhere\Pool\ResourceInterface;
  *
  * @package Inhere\Pool\Raw
  */
-class ResourcePool2 extends PoolAbstracter
+class Resource2Pool extends AbstractPool
 {
     /**
-     * @var ResourceInterface
+     * @var FactoryInterface
      */
     private $factory;
 
@@ -68,7 +68,7 @@ class ResourcePool2 extends PoolAbstracter
     }
 
     /**
-     * @return ResourceInterface
+     * @return FactoryInterface
      */
     public function getFactory()
     {
@@ -76,10 +76,10 @@ class ResourcePool2 extends PoolAbstracter
     }
 
     /**
-     * @param ResourceInterface $factory
+     * @param FactoryInterface $factory
      * @return $this
      */
-    public function setFactory(ResourceInterface $factory)
+    public function setFactory(FactoryInterface $factory)
     {
         $this->factory = $factory;
 

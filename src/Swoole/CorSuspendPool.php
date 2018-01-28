@@ -8,14 +8,14 @@
 
 namespace Inhere\Pool\Swoole;
 
-use Inhere\Pool\PoolAbstracter;
+use Inhere\Pool\AbstractPool;
 use Swoole\Coroutine;
 
 /**
  * Class ResourcePool - by Coroutine implement
  * @package Inhere\Pool\Swoole
  */
-abstract class CoroSuspendPool extends PoolAbstracter
+abstract class CorSuspendPool extends AbstractPool
 {
     /**
      * @var \SplQueue

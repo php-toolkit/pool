@@ -8,7 +8,7 @@
 
 namespace Inhere\Pool\Raw;
 
-use Inhere\Pool\PoolAbstracter;
+use Inhere\Pool\AbstractPool;
 
 /**
  * Class ResourcePool - 资源池
@@ -37,7 +37,7 @@ use Inhere\Pool\PoolAbstracter;
  *
  * @package Inhere\Pool\Raw
  */
-class ResourcePool extends PoolAbstracter
+class ResourcePool extends AbstractPool
 {
     /**
      * 资源创建者
