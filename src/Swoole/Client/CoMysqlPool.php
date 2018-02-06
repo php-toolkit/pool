@@ -12,10 +12,10 @@ use Inhere\Pool\Swoole\CoSuspendPool;
 use Swoole\Coroutine\MySQL;
 
 /**
- * Class CorMysqlPool
+ * Class CoMysqlPool
  * @package Inhere\Pool\Swoole\Client
  */
-class CorMysqlPool extends CoSuspendPool
+class CoMysqlPool extends CoSuspendPool
 {
     /**
      * @var array

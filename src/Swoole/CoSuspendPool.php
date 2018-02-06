@@ -41,7 +41,7 @@ abstract class CoSuspendPool extends AbstractPool
      * 等待并返回可用资源
      * @return bool|mixed
      */
-    protected function waitingAndGet()
+    protected function wait()
     {
         $coId = Coroutine::getuid();
 

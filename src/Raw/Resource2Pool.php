@@ -15,6 +15,12 @@ use Inhere\Pool\FactoryInterface;
  * Class ResourcePool2
  * - 通过设置的资源工厂类实现资源的创建和销毁
  *
+ * $pool = new ResourcePool([
+ *  'maxSize' => 50,
+ * ]);
+ *
+ * $pool->initPool();
+ *
  * @package Inhere\Pool\Raw
  */
 class Resource2Pool extends AbstractPool
@@ -24,20 +30,11 @@ class Resource2Pool extends AbstractPool
      */
     private $factory;
 
-    protected function init()
-    {
-        parent::init();
-
-        if ($this->factory) {
-            $this->prepare($this->getInitSize());
-        }
-    }
-
     /**
      * 等待并返回可用资源
      * @return bool|mixed
      */
-    protected function waitingAndGet()
+    protected function wait()
     {
         $timer = 0;
         $timeout = $this->getTimeout();
@@ -106,5 +103,15 @@ class Resource2Pool extends AbstractPool
     public function destroy($resource)
     {
         $this->factory->destroy($resource);
+    }
+
+    /**
+     * 验证资源(eg. db connection)有效性
+     * @param mixed $obj
+     * @return bool
+     */
+    protected function validate($obj): bool
+    {
+        // TODO: Implement validate() method.
     }
 }

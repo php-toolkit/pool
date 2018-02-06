@@ -53,17 +53,16 @@ $svr = new \Swoole\Http\Server($host, $port);
 echo "server run on {$host}:{$port}\n";
 
 $svr->on('request', function ($req, Response $res) use ($pool) {
-	// $db = $pool->get();
-
+	$db = $pool->get();
 	try {
-		$db = new Swoole\Coroutine\MySQL();
-		$db->connect([
-			'host' => 'mysql',
-			'port' => 3306,
-			'user' => 'root',
-			'password' => 'password',
-			'database' => 'test',
-		]);
+		// $db = new Swoole\Coroutine\MySQL();
+		// $db->connect([
+		// 	'host' => 'mysql',
+		// 	'port' => 3306,
+		// 	'user' => 'root',
+		// 	'password' => 'password',
+		// 	'database' => 'test',
+		// ]);
 		$data = $db->query('show tables');
 	} catch (\Throwable $e) {
 		var_dump($e->getMessage());

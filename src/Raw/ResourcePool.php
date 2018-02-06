@@ -64,7 +64,7 @@ class ResourcePool extends AbstractPool
      * 等待并返回可用资源
      * @return bool|mixed
      */
-    protected function waitingAndGet()
+    protected function wait()
     {
         $timer = 0;
         $timeout = $this->getTimeout();

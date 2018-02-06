@@ -12,10 +12,10 @@ use Inhere\Pool\Swoole\CoSuspendPool;
 use Swoole\Coroutine\Redis;
 
 /**
- * Class CorRedisPool
+ * Class CoRedisPool
  * @package Inhere\Pool\Swoole\Client
  */
-class CorRedisPool extends CoSuspendPool
+class CoRedisPool extends CoSuspendPool
 {
     /**
      * 创建新的资源实例

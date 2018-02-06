@@ -17,6 +17,11 @@ namespace Inhere\Pool;
 abstract class AbstractPool implements PoolInterface
 {
     /**
+     * @var string The pool name
+     */
+    private $name = 'default';
+
+    /**
      * (Free) available resource queue
      * @var \SplQueue
      */
@@ -72,16 +77,11 @@ abstract class AbstractPool implements PoolInterface
     /**
      * StdObject constructor.
      * @param array $config
-     * @param array $options
      */
-    public function __construct(array $config = [], array $options = [])
+    public function __construct(array $config = [])
     {
         foreach ($config as $property => $value) {
             $this->$property = $value;
-        }
-
-        if ($options) {
-            $this->setOptions($options);
         }
 
         $this->init();
@@ -101,6 +101,12 @@ abstract class AbstractPool implements PoolInterface
         }
     }
 
+    public function initPool()
+    {
+        // some works ...
+        $this->prepare($this->getInitSize());
+    }
+
     /**
      * {@inheritdoc}
      * @param bool $waiting 当没有资源可用时，是否等待
@@ -110,23 +116,21 @@ abstract class AbstractPool implements PoolInterface
      */
     public function get($waiting = null)
     {
-        // 还有可用资源
+        // There are also resources available
         if (!$this->freeQueue->isEmpty()) {
             $res = $res = $this->freeQueue->pop();
 
-            // 无可用的空闲资源， 并且资源池已满
+            // No available free resources, and the resource pool is full. waiting ...
         } elseif (!$this->hasFree() && ($this->count() >= $this->maxSize)) {
-            $waiting = $waiting ?? $this->waiting;
-
-            if (!$waiting) {
+            if (!$waiting ?? $this->waiting) {
                 return null;
             }
 
-            $res = $this->waitingAndGet();
+            $res = $this->wait();
 
-            // 无可用资源, 资源池未满
+            // No resources available, resource pool is not full
         } else {
-            // 创建新的资源
+            // create new resource
             $this->prepare($this->stepSize);
             $res = $this->freeQueue->pop();
         }
@@ -141,7 +145,7 @@ abstract class AbstractPool implements PoolInterface
      * 等待并返回可用资源
      * @return bool|mixed
      */
-    abstract protected function waitingAndGet();
+    abstract protected function wait();
 
     /**
      * {@inheritdoc}
@@ -174,7 +178,7 @@ abstract class AbstractPool implements PoolInterface
      * @param int $size
      * @return int
      */
-    public function prepare($size)
+    public function prepare(int $size)
     {
         if ($size <= 0) {
             return 0;
@@ -182,7 +186,7 @@ abstract class AbstractPool implements PoolInterface
 
         for ($i = 0; $i < $size; $i++) {
             $res = $this->create();
-//            var_dump($i, $size, $res);
+            // var_dump($i, $size, $res);
             $this->getFreeQueue()->push($res);
         }
 
@@ -208,18 +212,14 @@ abstract class AbstractPool implements PoolInterface
      */
     protected function expire($obj): void
     {
-
     }
 
     /**
-     * 验证对象有效性
+     * 验证资源(eg. db connection)有效性
      * @param mixed $obj
      * @return bool
      */
-    protected function validate($obj): bool
-    {
-        return true;
-    }
+    abstract protected function validate($obj): bool;
 
     /**
      * @return int
@@ -275,6 +275,14 @@ abstract class AbstractPool implements PoolInterface
     public function __destruct()
     {
         $this->clear();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**
