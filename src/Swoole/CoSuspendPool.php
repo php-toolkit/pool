@@ -15,7 +15,7 @@ use Swoole\Coroutine;
  * Class ResourcePool - by Coroutine implement
  * @package Inhere\Pool\Swoole
  */
-abstract class CorSuspendPool extends AbstractPool
+abstract class CoSuspendPool extends AbstractPool
 {
     /**
      * @var \SplQueue

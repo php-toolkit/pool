@@ -20,8 +20,14 @@ interface FactoryInterface
     public function create();
 
     /**
-     * @param \stdClass $obj the resource object
+     * @param \stdClass|mixed $obj The resource
      * @return mixed
      */
     public function destroy($obj);
+
+    /**
+     * @param \stdClass|mixed $obj The resource
+     * @return bool
+     */
+    // public function validate($obj);
 }

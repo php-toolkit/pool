@@ -8,22 +8,22 @@
 
 use Inhere\Pool\Raw\ResourcePool;
 
-require dirname(__DIR__) . '/tests/boot.php';
+require dirname(__DIR__) . '/test/boot.php';
 
 $rpl = new ResourcePool([
-    'initSize' => 2,
-    'maxSize' => 2
+	'initSize' => 2,
+	'maxSize' => 2,
 ]);
 
 $rpl->setCreator(function () {
-    $obj = new \stdClass();
-    $obj->name = 'test';
+	$obj = new \stdClass();
+	$obj->name = 'test';
 
-    return $obj;
+	return $obj;
 })
-    ->setDestroyer(function ($obj) {
-    echo "call resource destroyer.\n";
-});
+	->setDestroyer(function ($obj) {
+		echo "call resource destroyer.\n";
+	});
 
 var_dump($rpl);
 
@@ -31,7 +31,7 @@ $obj1 = $rpl->get();
 $obj2 = $rpl->get();
 $obj3 = $rpl->get();
 
-var_dump($obj1, $obj2, $obj3,$rpl);
+var_dump($obj1, $obj2, $obj3, $rpl);
 
 $rpl->put($obj1);
 $rpl->put($obj2);
@@ -39,7 +39,7 @@ $rpl->put($obj2);
 var_dump($rpl);
 
 $rpl->call(function ($obj) {
-   echo " $obj->name\n";
+	echo " $obj->name\n";
 });
 
 var_dump($rpl);

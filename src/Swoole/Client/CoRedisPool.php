@@ -8,14 +8,14 @@
 
 namespace Inhere\Pool\Swoole\Client;
 
-use Inhere\Pool\Swoole\CorSuspendPool;
+use Inhere\Pool\Swoole\CoSuspendPool;
 use Swoole\Coroutine\Redis;
 
 /**
  * Class CorRedisPool
  * @package Inhere\Pool\Swoole\Client
  */
-class CorRedisPool extends CorSuspendPool
+class CorRedisPool extends CoSuspendPool
 {
     /**
      * 创建新的资源实例
@@ -44,4 +44,3 @@ class CorRedisPool extends CorSuspendPool
         // unset($resource);
     }
 }
-

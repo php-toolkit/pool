@@ -8,14 +8,14 @@
 
 namespace Inhere\Pool\Swoole\Client;
 
-use Inhere\Pool\Swoole\CorSleepPool;
+use Inhere\Pool\Swoole\CoSleepPool;
 use Swoole\Coroutine\MySQL;
 
 /**
  * Class CoroMysqlPool2
  * @package Inhere\Pool\Swoole\Client
  */
-class CorMysqlPool2 extends CorSleepPool
+class CorMysqlPool2 extends CoSleepPool
 {
     /**
      * @var array
@@ -27,7 +27,7 @@ class CorMysqlPool2 extends CorSleepPool
             'user' => 'root',
             'password' => 'password',
             'database' => 'my_test',
-        ]
+        ],
     ];
 
     /**
@@ -58,4 +58,3 @@ class CorMysqlPool2 extends CorSleepPool
 //        unset($resource);
     }
 }
-

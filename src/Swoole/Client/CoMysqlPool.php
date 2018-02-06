@@ -8,14 +8,14 @@
 
 namespace Inhere\Pool\Swoole\Client;
 
-use Inhere\Pool\Swoole\CorSuspendPool;
+use Inhere\Pool\Swoole\CoSuspendPool;
 use Swoole\Coroutine\MySQL;
 
 /**
  * Class CorMysqlPool
  * @package Inhere\Pool\Swoole\Client
  */
-class CorMysqlPool extends CorSuspendPool
+class CorMysqlPool extends CoSuspendPool
 {
     /**
      * @var array
@@ -27,7 +27,7 @@ class CorMysqlPool extends CorSuspendPool
             'user' => 'root',
             'password' => 'password',
             'database' => 'my_test',
-        ]
+        ],
     ];
 
     /**
@@ -39,11 +39,11 @@ class CorMysqlPool extends CorSuspendPool
         $conf = $this->options['db1'];
         $db = new MySQL();
 
-//        debug('coId:' . Coroutine::id() . ' will create new db connection');
+        // debug('coId:' . Coroutine::id() . ' will create new db connection');
 
         $db->connect($conf);
 
-//        debug('coId:' . Coroutine::id() . ' a new db connection created');
+        // debug('coId:' . Coroutine::id() . ' a new db connection created');
 
         return $db;
     }
@@ -55,7 +55,6 @@ class CorMysqlPool extends CorSuspendPool
      */
     public function destroy($resource)
     {
-//        unset($resource);
+        // unset($resource);
     }
 }
-

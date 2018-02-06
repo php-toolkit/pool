@@ -15,7 +15,7 @@ use Swoole\Coroutine;
  * Class ResourcePool - by Coroutine implement
  * @package Inhere\Pool\Swoole
  */
-abstract class CorSleepPool extends AbstractPool
+abstract class CoSleepPool extends AbstractPool
 {
     /**
      * check Interval time(ms)
@@ -39,7 +39,7 @@ abstract class CorSleepPool extends AbstractPool
         $timer = 0;
         $timeout = $this->getTimeout();
         $interval = $this->checkInterval;
-        $intervalSecond = $this->checkInterval/1000;
+        $intervalSecond = $this->checkInterval / 1000;
 
         while ($timer <= $timeout) {
             // 等到了可用的空闲资源
