@@ -8,6 +8,9 @@
 
 namespace Inhere\Pool;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 /**
  * Class PoolAbstracter
  *  - 需要继承它，在自己的子类实现资源的创建和销毁. 以及一些自定义
@@ -34,6 +37,16 @@ abstract class AbstractPool implements PoolInterface
     protected $busyQueue;
 
     /**
+     * @var array[]
+     * [
+     *  'res id' => [
+     *      'createdAt' => int,
+     *  ]
+     * ]
+     */
+    protected $metadata = [];
+
+    /**
      * default 30 seconds
      * @var int
      */
@@ -58,21 +71,49 @@ abstract class AbstractPool implements PoolInterface
     private $maxSize = 100;
 
     /**
-     * @var bool
+     * @var int Minimum free connection. 最小空闲连接
      */
-    private $waiting = true;
+    private $minFree = 3;
 
     /**
-     * the waiting timeout(ms) when get resource
+     * @var int Maximum free connection. 最大空闲连接
+     */
+    private $maxFree = 10;
+
+    /**
+     * Maximum waiting time(ms) when get connection.
+     * > 0  waiting time(ms)
+     * 0    Do not wait
+     * -1   Always waiting
      * @var int
      */
-    private $timeout = 1000;
+    private $maxWait = 3000;
+
+    /**
+     * @var int The max free time(minutes) the free resource - 资源最大空闲时间
+     */
+    protected $maxFreeTime = 10;
+
+    /**
+     * @var bool Whether validate resource on get
+     */
+    private $validateOnGet = true;
+
+    /**
+     * @var bool Whether validate resource on put
+     */
+    private $validateOnPut = true;
 
     /**
      * 自定义的资源配置(创建资源对象时可能会用到 e.g mysql 连接配置)
      * @var array
      */
     protected $options = [];
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * StdObject constructor.
@@ -105,6 +146,10 @@ abstract class AbstractPool implements PoolInterface
     {
         // some works ...
         $this->prepare($this->initSize);
+
+        if (!$this->logger) {
+            $this->logger = new NullLogger();
+        }
     }
 
     /**
@@ -114,16 +159,25 @@ abstract class AbstractPool implements PoolInterface
      *  false 返回 null
      * @return mixed
      */
-    public function get(bool $waiting = null)
+    public function get()
     {
         // There are also resources available
         if (!$this->freeQueue->isEmpty()) {
             $res = $res = $this->freeQueue->pop();
 
-            // No available free resources, and the resource pool is full. waiting ...
-        } elseif (!$this->hasFree() && ($this->count() >= $this->maxSize)) {
-            if (!$waiting ?? $this->waiting) {
-                return null;
+            // add to busy pool
+            $this->busyQueue->attach($res);
+
+            return $res;
+        }
+
+        // No available free resources, and the resource pool is full. waiting ...
+        if (!$this->hasFree() && ($this->count() >= $this->maxSize)) {
+            if ($this->maxWait === 0) {
+                // return null;
+                throw new \RuntimeException(
+                    "Server busy, no resources available.(The pool has been overflow max value: {$this->maxSize})"
+                );
             }
 
             $res = $this->wait();
@@ -194,6 +248,23 @@ abstract class AbstractPool implements PoolInterface
     }
 
     /**
+     * @param mixed $resource
+     * @return string
+     */
+    protected function genID($resource)
+    {
+        if (\is_resource($resource)) {
+            return (string)$resource;
+        }
+
+        if (\is_object($resource)) {
+            return spl_object_hash($resource);
+        }
+
+        return md5(json_encode($resource));
+    }
+
+    /**
      * 创建新的资源实例
      * @return mixed
      */
@@ -232,7 +303,7 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @return int
      */
-    public function countFree()
+    public function freeCount(): int
     {
         return $this->freeQueue->count();
     }
@@ -240,7 +311,7 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @return int
      */
-    public function countBusy()
+    public function busyCount(): int
     {
         return $this->busyQueue->count();
     }
@@ -248,7 +319,7 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @return bool
      */
-    public function hasFree()
+    public function hasFree(): bool
     {
         return $this->freeQueue->count() > 0;
     }
@@ -256,7 +327,7 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @return bool
      */
-    public function hasBusy()
+    public function hasBusy(): bool
     {
         return $this->busyQueue->count() > 0;
     }
@@ -294,6 +365,86 @@ abstract class AbstractPool implements PoolInterface
     }
 
     /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinFree(): int
+    {
+        return $this->minFree;
+    }
+
+    /**
+     * @param int $minFree
+     */
+    public function setMinFree(int $minFree)
+    {
+        $this->minFree = $minFree;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxFree(): int
+    {
+        return $this->maxFree;
+    }
+
+    /**
+     * @param int $maxFree
+     */
+    public function setMaxFree(int $maxFree)
+    {
+        $this->maxFree = $maxFree;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxWait(): int
+    {
+        return $this->maxWait;
+    }
+
+    /**
+     * @param int $maxWait
+     */
+    public function setMaxWait(int $maxWait)
+    {
+        $this->maxWait = $maxWait;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxFreeTime(): int
+    {
+        return $this->maxFreeTime;
+    }
+
+    /**
+     * @param int $maxFreeTime
+     */
+    public function setMaxFreeTime(int $maxFreeTime)
+    {
+        $this->maxFreeTime = $maxFreeTime;
+    }
+
+    /**
      * @return int
      */
     public function getExpireTime(): int
@@ -307,6 +458,38 @@ abstract class AbstractPool implements PoolInterface
     public function setExpireTime(int $expireTime)
     {
         $this->expireTime = $expireTime;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidateOnGet(): bool
+    {
+        return $this->validateOnGet;
+    }
+
+    /**
+     * @param bool $validateOnGet
+     */
+    public function setValidateOnGet(bool $validateOnGet)
+    {
+        $this->validateOnGet = $validateOnGet;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidateOnPut(): bool
+    {
+        return $this->validateOnPut;
+    }
+
+    /**
+     * @param bool $validateOnPut
+     */
+    public function setValidateOnPut(bool $validateOnPut)
+    {
+        $this->validateOnPut = $validateOnPut;
     }
 
     /**
@@ -392,38 +575,6 @@ abstract class AbstractPool implements PoolInterface
     public function setBusyQueue(\SplObjectStorage $busyQueue)
     {
         $this->busyQueue = $busyQueue;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWaiting(): bool
-    {
-        return $this->waiting;
-    }
-
-    /**
-     * @param bool $waiting
-     */
-    public function setWaiting($waiting)
-    {
-        $this->waiting = (bool)$waiting;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeout(): int
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @param int $timeout
-     */
-    public function setTimeout(int $timeout)
-    {
-        $this->timeout = $timeout;
     }
 
     /**

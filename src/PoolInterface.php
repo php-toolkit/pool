@@ -16,10 +16,9 @@ interface PoolInterface
 {
     /**
      * Access to resource
-     * @param bool $waiting 是否等待，当没有资源可用时
      * @return mixed
      */
-    public function get($waiting = null);
+    public function get();
 
     /**
      * Return resource to the pool

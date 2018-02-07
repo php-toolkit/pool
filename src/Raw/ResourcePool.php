@@ -67,7 +67,7 @@ class ResourcePool extends AbstractPool
     protected function wait()
     {
         $timer = 0;
-        $timeout = $this->getTimeout();
+        $timeout = $this->getMaxWait();
         $interval = 50;
         $uSleep = $interval * 1000;
 

@@ -8,7 +8,7 @@
 
 namespace Inhere\Pool;
 
-use Inhere\Pool\Swoole\Client\CoMysqlPool;
+use SwooleLib\Pool\Co\MySQL\MySQLPool;
 
 /**
  * Class PoolManager
@@ -47,6 +47,10 @@ class PoolManager
     {
     }
 
+    private function __clone()
+    {
+    }
+
     public function __destruct()
     {
         foreach ($this->pools as $pool) {
@@ -57,7 +61,7 @@ class PoolManager
     public function init()
     {
         foreach ($this->configs as $config) {
-            $pool = new CoMysqlPool($config);
+            $pool = new MySQLPool($config);
             $pool->initPool();
 
             $this->pools[$pool->getName()] = $pool;
