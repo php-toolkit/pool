@@ -19,19 +19,19 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @var string The pool name
      */
-    private $name = 'default';
+    protected $name = 'default';
 
     /**
      * (Free) available resource queue
      * @var \SplQueue
      */
-    private $freeQueue;
+    protected $freeQueue;
 
     /**
      * (Busy) in use resource
      * @var \SplObjectStorage
      */
-    private $busyQueue;
+    protected $busyQueue;
 
     /**
      * default 30 seconds
@@ -104,7 +104,7 @@ abstract class AbstractPool implements PoolInterface
     public function initPool()
     {
         // some works ...
-        $this->prepare($this->getInitSize());
+        $this->prepare($this->initSize);
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class AbstractPool implements PoolInterface
      *  false 返回 null
      * @return mixed
      */
-    public function get($waiting = null)
+    public function get(bool $waiting = null)
     {
         // There are also resources available
         if (!$this->freeQueue->isEmpty()) {
@@ -178,7 +178,7 @@ abstract class AbstractPool implements PoolInterface
      * @param int $size
      * @return int
      */
-    public function prepare(int $size)
+    protected function prepare(int $size)
     {
         if ($size <= 0) {
             return 0;
@@ -251,6 +251,14 @@ abstract class AbstractPool implements PoolInterface
     public function hasFree()
     {
         return $this->freeQueue->count() > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasBusy()
+    {
+        return $this->busyQueue->count() > 0;
     }
 
     /**

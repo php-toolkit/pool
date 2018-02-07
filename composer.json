@@ -16,6 +16,9 @@
     "php": ">=7.0.0",
     "guzzlehttp/promises": "^1.3"
   },
+  "require-dev": {
+    "swoole-libs/connection-pool": "dev-master"
+  },
   "autoload": {
     "psr-4": {
       "Inhere\\Pool\\" : "src/"
