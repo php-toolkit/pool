@@ -122,7 +122,13 @@ abstract class AbstractPool implements PoolInterface
     public function __construct(array $config = [])
     {
         foreach ($config as $property => $value) {
-            $this->$property = $value;
+            $setter = 'set' . ucfirst($property);
+
+            if (\method_exists($this, $setter)) {
+                $this->$setter($value);
+            } elseif (\property_exists($this, $property)) {
+                $this->$property = $value;
+            }
         }
 
         $this->init();
@@ -163,7 +169,7 @@ abstract class AbstractPool implements PoolInterface
     {
         // There are also resources available
         if (!$this->freeQueue->isEmpty()) {
-            $res = $res = $this->freeQueue->pop();
+            $res = $this->freeQueue->pop();
 
             // add to busy pool
             $this->busyQueue->attach($res);
