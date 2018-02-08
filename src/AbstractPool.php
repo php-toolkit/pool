@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class PoolAbstracter
+ * Class AbstractPool
  *  - 需要继承它，在自己的子类实现资源的创建和销毁. 以及一些自定义
  *
  * @package Inhere\Pool
@@ -50,7 +50,7 @@ abstract class AbstractPool implements PoolInterface
      * default 30 seconds
      * @var int
      */
-    public $expireTime = 30;
+    protected $expireTime = 30;
 
     /**
      * Initialize the pool size
@@ -90,19 +90,24 @@ abstract class AbstractPool implements PoolInterface
     private $maxWait = 3000;
 
     /**
-     * @var int The max free time(minutes) the free resource - 资源最大空闲时间
+     * @var int The free timeout(minutes) the free resource - 资源最大空闲时间
      */
-    protected $maxFreeTime = 10;
+    protected $freeTimeout = 10;
+
+    /**
+     * @var int The max free time(minutes) the free resource - 资源最大生命时长
+     */
+    protected $maxLifetime = 30;
 
     /**
      * @var bool Whether validate resource on get
      */
-    private $validateOnGet = true;
+    protected $validateOnGet = true;
 
     /**
      * @var bool Whether validate resource on put
      */
-    private $validateOnPut = true;
+    protected $validateOnPut = true;
 
     /**
      * 自定义的资源配置(创建资源对象时可能会用到 e.g mysql 连接配置)
@@ -160,9 +165,6 @@ abstract class AbstractPool implements PoolInterface
 
     /**
      * {@inheritdoc}
-     * @param bool $waiting 当没有资源可用时，是否等待
-     *  true  挂起，等待空闲连接
-     *  false 返回 null
      * @return mixed
      */
     public function get()
@@ -437,17 +439,33 @@ abstract class AbstractPool implements PoolInterface
     /**
      * @return int
      */
-    public function getMaxFreeTime(): int
+    public function getFreeTimeout(): int
     {
-        return $this->maxFreeTime;
+        return $this->freeTimeout;
     }
 
     /**
-     * @param int $maxFreeTime
+     * @param int $freeTimeout
      */
-    public function setMaxFreeTime(int $maxFreeTime)
+    public function setFreeTimeout(int $freeTimeout)
     {
-        $this->maxFreeTime = $maxFreeTime;
+        $this->freeTimeout = $freeTimeout;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxLifetime(): int
+    {
+        return $this->maxLifetime;
+    }
+
+    /**
+     * @param int $maxLifetime
+     */
+    public function setMaxLifetime(int $maxLifetime)
+    {
+        $this->maxLifetime = $maxLifetime;
     }
 
     /**
