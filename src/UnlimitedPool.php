@@ -43,6 +43,7 @@ class UnlimitedPool implements PoolInterface
 
     /**
      * {@inheritdoc}
+     * @throws \RuntimeException
      */
     public function get()
     {

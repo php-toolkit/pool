@@ -29,5 +29,5 @@ interface FactoryInterface
      * @param \stdClass|mixed $obj The resource
      * @return bool
      */
-    // public function validate($obj);
+    public function validate($obj): bool;
 }

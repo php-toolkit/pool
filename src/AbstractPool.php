@@ -81,7 +81,7 @@ abstract class AbstractPool implements PoolInterface
     private $maxFree = 10;
 
     /**
-     * Maximum waiting time(ms) when get connection.
+     * Maximum waiting time(ms) when get connection. - 获取资源等待超时时间
      * > 0  waiting time(ms)
      * 0    Do not wait
      * -1   Always waiting
@@ -166,6 +166,7 @@ abstract class AbstractPool implements PoolInterface
     /**
      * {@inheritdoc}
      * @return mixed
+     * @throws \RuntimeException
      */
     public function get()
     {
@@ -240,7 +241,7 @@ abstract class AbstractPool implements PoolInterface
      * @param int $size
      * @return int
      */
-    protected function prepare(int $size)
+    protected function prepare(int $size): int
     {
         if ($size <= 0) {
             return 0;

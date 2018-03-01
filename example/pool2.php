@@ -21,6 +21,11 @@ class TestObj implements \Inhere\Pool\FactoryInterface {
 	public function destroy($obj) {
 		echo "release() method.\n";
 	}
+
+	public function validate($obj): bool
+    {
+        return true;
+    }
 }
 
 $spl = new UnlimitedPool(new TestObj());

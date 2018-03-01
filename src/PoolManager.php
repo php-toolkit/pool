@@ -8,7 +8,7 @@
 
 namespace Inhere\Pool;
 
-use SwooleLib\Pool\Co\MySQL\MySQLPool;
+use SwooleLib\Pool\Co\MySQL\SuspendDriverPool;
 
 /**
  * Class PoolManager
@@ -61,7 +61,7 @@ class PoolManager
     public function init()
     {
         foreach ($this->configs as $config) {
-            $pool = new MySQLPool($config);
+            $pool = new SuspendDriverPool($config);
             $pool->initPool();
 
             $this->pools[$pool->getName()] = $pool;
