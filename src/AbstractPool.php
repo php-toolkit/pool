@@ -8,7 +8,6 @@
 
 namespace Inhere\Pool;
 
-use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -19,6 +18,8 @@ use Psr\Log\NullLogger;
  */
 abstract class AbstractPool implements PoolInterface
 {
+    use FulledPoolTrait;
+
     /**
      * @var string The pool name
      */
@@ -37,88 +38,16 @@ abstract class AbstractPool implements PoolInterface
     protected $busyQueue;
 
     /**
-     * @var array[]
-     * [
-     *  'res id' => [
-     *      'createdAt' => int,
-     *  ]
-     * ]
-     */
-    protected $metadata = [];
-
-    /**
      * default 30 seconds
      * @var int
      */
     protected $expireTime = 30;
 
     /**
-     * Initialize the pool size
-     * @var int
-     */
-    private $initSize = 0;
-
-    /**
-     * 扩大的增量(当资源不够时，一次增加资源的数量)
-     * @var int
-     */
-    private $stepSize = 1;
-
-    /**
-     * The maximum size of the pool resources
-     * @var int
-     */
-    private $maxSize = 100;
-
-    /**
-     * @var int Minimum free connection. 最小空闲连接
-     */
-    private $minFree = 3;
-
-    /**
-     * @var int Maximum free connection. 最大空闲连接
-     */
-    private $maxFree = 10;
-
-    /**
-     * Maximum waiting time(ms) when get connection. - 获取资源等待超时时间
-     * > 0  waiting time(ms)
-     * 0    Do not wait
-     * -1   Always waiting
-     * @var int
-     */
-    private $maxWait = 3000;
-
-    /**
-     * @var int The free timeout(minutes) the free resource - 资源最大空闲时间
-     */
-    protected $freeTimeout = 10;
-
-    /**
-     * @var int The max free time(minutes) the free resource - 资源最大生命时长
-     */
-    protected $maxLifetime = 30;
-
-    /**
-     * @var bool Whether validate resource on get
-     */
-    protected $validateOnGet = true;
-
-    /**
-     * @var bool Whether validate resource on put
-     */
-    protected $validateOnPut = true;
-
-    /**
      * 自定义的资源配置(创建资源对象时可能会用到 e.g mysql 连接配置)
      * @var array
      */
     protected $options = [];
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * StdObject constructor.
@@ -182,7 +111,7 @@ abstract class AbstractPool implements PoolInterface
 
         // No available free resources, and the resource pool is full. waiting ...
         if (!$this->hasFree() && ($this->count() >= $this->maxSize)) {
-            if ($this->maxWait === 0) {
+            if ($this->waitTimeout === 0) {
                 // return null;
                 throw new \RuntimeException(
                     "Server busy, no resources available.(The pool has been overflow max value: {$this->maxSize})"
@@ -257,20 +186,20 @@ abstract class AbstractPool implements PoolInterface
     }
 
     /**
-     * @param mixed $resource
+     * @param mixed $obj
      * @return string
      */
-    protected function genID($resource)
+    protected function genID($obj): string
     {
-        if (\is_resource($resource)) {
-            return (string)$resource;
+        if (\is_resource($obj)) {
+            return (string)$obj;
         }
 
-        if (\is_object($resource)) {
-            return spl_object_hash($resource);
+        if (\is_object($obj)) {
+            return \spl_object_hash($obj);
         }
 
-        return md5(json_encode($resource));
+        return \md5(\json_encode($obj));
     }
 
     /**
@@ -281,16 +210,16 @@ abstract class AbstractPool implements PoolInterface
 
     /**
      * 销毁资源实例
-     * @param $resource
+     * @param $obj
      * @return void
      */
-    abstract public function destroy($resource);
+    abstract public function destroy($obj);
 
     /**
      * 处理已过期的对象
      * @param $obj
      */
-    protected function expire($obj): void
+    protected function expire($obj)
     {
     }
 
@@ -363,211 +292,6 @@ abstract class AbstractPool implements PoolInterface
     public function __destruct()
     {
         $this->clear();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger(): LoggerInterface
-    {
-        return $this->logger;
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMinFree(): int
-    {
-        return $this->minFree;
-    }
-
-    /**
-     * @param int $minFree
-     */
-    public function setMinFree(int $minFree)
-    {
-        $this->minFree = $minFree;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxFree(): int
-    {
-        return $this->maxFree;
-    }
-
-    /**
-     * @param int $maxFree
-     */
-    public function setMaxFree(int $maxFree)
-    {
-        $this->maxFree = $maxFree;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxWait(): int
-    {
-        return $this->maxWait;
-    }
-
-    /**
-     * @param int $maxWait
-     */
-    public function setMaxWait(int $maxWait)
-    {
-        $this->maxWait = $maxWait;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFreeTimeout(): int
-    {
-        return $this->freeTimeout;
-    }
-
-    /**
-     * @param int $freeTimeout
-     */
-    public function setFreeTimeout(int $freeTimeout)
-    {
-        $this->freeTimeout = $freeTimeout;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxLifetime(): int
-    {
-        return $this->maxLifetime;
-    }
-
-    /**
-     * @param int $maxLifetime
-     */
-    public function setMaxLifetime(int $maxLifetime)
-    {
-        $this->maxLifetime = $maxLifetime;
-    }
-
-    /**
-     * @return int
-     */
-    public function getExpireTime(): int
-    {
-        return $this->expireTime;
-    }
-
-    /**
-     * @param int $expireTime
-     */
-    public function setExpireTime(int $expireTime)
-    {
-        $this->expireTime = $expireTime;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidateOnGet(): bool
-    {
-        return $this->validateOnGet;
-    }
-
-    /**
-     * @param bool $validateOnGet
-     */
-    public function setValidateOnGet(bool $validateOnGet)
-    {
-        $this->validateOnGet = $validateOnGet;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidateOnPut(): bool
-    {
-        return $this->validateOnPut;
-    }
-
-    /**
-     * @param bool $validateOnPut
-     */
-    public function setValidateOnPut(bool $validateOnPut)
-    {
-        $this->validateOnPut = $validateOnPut;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInitSize(): int
-    {
-        return $this->initSize;
-    }
-
-    /**
-     * @param int $initSize
-     */
-    public function setInitSize(int $initSize)
-    {
-        $this->initSize = $initSize < 0 ? 0 : $initSize;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStepSize(): int
-    {
-        return $this->stepSize;
-    }
-
-    /**
-     * @param int $stepSize
-     */
-    public function setStepSize(int $stepSize)
-    {
-        $this->stepSize = $stepSize < 1 ? 1 : $stepSize;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxSize(): int
-    {
-        return $this->maxSize;
-    }
-
-    /**
-     * @param int $maxSize
-     * @throws \InvalidArgumentException
-     */
-    public function setMaxSize(int $maxSize)
-    {
-        if ($maxSize < 1) {
-            throw new \InvalidArgumentException('The resource pool max size cannot lt 1');
-        }
-
-        $this->maxSize = $maxSize;
     }
 
     /**

@@ -147,4 +147,14 @@ class ResourcePool extends AbstractPool
 
         return $this;
     }
+
+    /**
+     * 验证资源(eg. db connection)有效性
+     * @param mixed $obj
+     * @return bool
+     */
+    protected function validate($obj): bool
+    {
+        // TODO: Implement validate() method.
+    }
 }

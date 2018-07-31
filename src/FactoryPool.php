@@ -12,7 +12,7 @@ namespace Inhere\Pool;
  * Class ConnectionPool
  * @package Inhere\Pool
  */
-class ConnectionPool extends AbstractPool
+class FactoryPool extends AbstractPool
 {
     /**
      * @var FactoryInterface

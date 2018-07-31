@@ -1,9 +1,9 @@
 {
-  "name": "inhere/resource-pool",
+  "name": "toolkit/pool",
   "type": "library",
-  "description": "a simple resource-pool library of the php",
+  "description": "a simple resource pool library of the php",
   "keywords": ["library","resource-pool"],
-  "homepage": "http://github.com/inhere/php-resource-pool",
+  "homepage": "http://github.com/php-toolkit/pool",
   "license": "MIT",
   "authors": [
     {
@@ -21,10 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Inhere\\Pool\\" : "src/"
+      "Toolkit\\Pool\\" : "src/"
     }
-  },
-  "suggest": {
-    "inhere/simple-print-tool": "Very lightweight data printing tools"
   }
 }
