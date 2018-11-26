@@ -6,7 +6,7 @@
  * Time: 14:48
  */
 
-use Inhere\Pool\Swoole\CoSuspendPool;
+use Toolkit\Pool\Swoole\CoSuspendPool;
 use Swoole\Http\Response;
 
 require dirname(__DIR__) . '/test/boot.php';

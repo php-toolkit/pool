@@ -6,11 +6,11 @@
  * Time: 23:33
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 /**
  * Class ConnectionPool
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 class FactoryPool extends AbstractPool
 {

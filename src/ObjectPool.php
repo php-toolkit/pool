@@ -6,11 +6,11 @@
  * Time: 17:02
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 /**
  * Class ObjPool
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 class ObjectPool
 {

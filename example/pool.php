@@ -6,7 +6,7 @@
  * Time: 上午10:53
  */
 
-use Inhere\Pool\Raw\ResourcePool;
+use Toolkit\Pool\Raw\ResourcePool;
 
 require dirname(__DIR__) . '/test/boot.php';
 

@@ -12,8 +12,8 @@ date_default_timezone_set('Asia/Shanghai');
 
 $inhereDir = dirname(__DIR__, 2);
 $map = [
-	'Inhere\Pool\Test\\' => dirname(__DIR__) . '/test',
-	'Inhere\Pool\\' => dirname(__DIR__) . '/src',
+	'Toolkit\Pool\Test\\' => dirname(__DIR__) . '/test',
+	'Toolkit\Pool\\' => dirname(__DIR__) . '/src',
 ];
 
 spl_autoload_register(function ($class) use ($map) {

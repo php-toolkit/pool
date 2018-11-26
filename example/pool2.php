@@ -6,11 +6,11 @@
  * Time: 上午10:53
  */
 
-use Inhere\Pool\UnlimitedPool;
+use Toolkit\Pool\UnlimitedPool;
 
 require dirname(__DIR__) . '/test/boot.php';
 
-class TestObj implements \Inhere\Pool\FactoryInterface {
+class TestObj implements \Toolkit\Pool\FactoryInterface {
 	public function create() {
 		$obj = new \stdClass();
 		$obj->name = 'test';

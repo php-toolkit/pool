@@ -6,13 +6,13 @@
  * Time: 23:00
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 use Psr\Log\LoggerInterface;
 
 /**
  * Trait LitePoolTrait
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 trait BasePoolTrait
 {

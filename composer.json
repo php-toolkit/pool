@@ -2,7 +2,10 @@
   "name": "toolkit/pool",
   "type": "library",
   "description": "a simple resource pool library of the php",
-  "keywords": ["library","resource-pool"],
+  "keywords": [
+    "library",
+    "resource-pool"
+  ],
   "homepage": "http://github.com/php-toolkit/pool",
   "license": "MIT",
   "authors": [
@@ -17,11 +20,11 @@
     "guzzlehttp/promises": "^1.3"
   },
   "require-dev": {
-    "swoole-libs/connection-pool": "dev-master"
+    "swokit/connection-pool": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Toolkit\\Pool\\" : "src/"
+      "Toolkit\\Pool\\": "src/"
     }
   }
 }

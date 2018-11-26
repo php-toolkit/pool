@@ -1,26 +1,24 @@
 # 资源池
 
+[![License](https://img.shields.io/packagist/l/toolkit/pool.svg?style=flat-square)](LICENSE)
+[![Php Version](https://img.shields.io/badge/php-%3E=7.0-brightgreen.svg?maxAge=2592000)](https://packagist.org/packages/toolkit/pool)
+[![Latest Stable Version](http://img.shields.io/packagist/v/toolkit/pool.svg)](https://packagist.org/packages/toolkit/pool)
+
 > 资源池使用在 **常住进程的服务** 中才有用。比如用 swoole/workman 创建的应用
 
 使用池可实现 数据库连接池、redis连接池等，减少对服务的过多的连接/断开带来的额外资源消耗
 
 ## 项目地址
 
-- **git@osc** https://git.oschina.net/inhere/php-resource-pool.git
-- **github** https://github.com/inhere/php-resource-pool.git
-
-**注意：**
-
-- master 分支是要求 `php >= 7` 的
+- **github** https://github.com/php-toolkit/pool.git
 
 ## 安装
 
-- 使用 composer
-
-编辑 `composer.json`，在 `require` 添加
+- 使用 `composer require toolkit/pool`
+- 使用 `composer.json`
 
 ```
-"inhere/resource-pool": "dev-master"
+"toolkit/pool": "dev-master"
 ```
 
 然后执行: `composer update`
@@ -36,7 +34,7 @@ git clone https://github.com/inhere/php-resource-pool.git // github
 
 ```php
 
-use Inhere\Pool\Raw\ResourcePool;
+use Toolkit\Pool\Raw\ResourcePool;
 
 $rpl = new ResourcePool([
     'initSize' => 2,
@@ -78,4 +76,4 @@ var_dump($rpl);
 
 ## License
 
-MIT
+[MIT](LICENSE)

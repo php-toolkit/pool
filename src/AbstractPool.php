@@ -6,7 +6,7 @@
  * Time: 下午1:43
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 use Psr\Log\NullLogger;
 
@@ -14,7 +14,7 @@ use Psr\Log\NullLogger;
  * Class AbstractPool
  *  - 需要继承它，在自己的子类实现资源的创建和销毁. 以及一些自定义
  *
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 abstract class AbstractPool implements PoolInterface
 {

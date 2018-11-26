@@ -6,11 +6,11 @@
  * Time: 22:59
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 /**
  * Trait FulledPoolTrait
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 trait FulledPoolTrait
 {

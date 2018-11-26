@@ -6,11 +6,11 @@
  * Time: 下午7:16
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 /**
  * Class FactoryInterface - resource factory interface
- * @package Inhere\Pool
+ * @package Toolkit\Pool
  */
 interface FactoryInterface
 {

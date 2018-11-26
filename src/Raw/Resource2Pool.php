@@ -6,10 +6,10 @@
  * Time: 下午1:50
  */
 
-namespace Inhere\Pool\Raw;
+namespace Toolkit\Pool\Raw;
 
-use Inhere\Pool\AbstractPool;
-use Inhere\Pool\FactoryInterface;
+use Toolkit\Pool\AbstractPool;
+use Toolkit\Pool\FactoryInterface;
 
 /**
  * Class ResourcePool2
@@ -21,7 +21,7 @@ use Inhere\Pool\FactoryInterface;
  *
  * $pool->initPool();
  *
- * @package Inhere\Pool\Raw
+ * @package Toolkit\Pool\Raw
  */
 class Resource2Pool extends AbstractPool
 {

@@ -6,9 +6,9 @@
  * Time: 上午9:31
  */
 
-namespace Inhere\Pool\Raw;
+namespace Toolkit\Pool\Raw;
 
-use Inhere\Pool\AbstractPool;
+use Toolkit\Pool\AbstractPool;
 
 /**
  * Class ResourcePool - 资源池
@@ -35,7 +35,7 @@ use Inhere\Pool\AbstractPool;
  * $rpl->put($db);
  * ```
  *
- * @package Inhere\Pool\Raw
+ * @package Toolkit\Pool\Raw
  */
 class ResourcePool extends AbstractPool
 {

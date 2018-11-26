@@ -6,11 +6,11 @@
  * Time: 19:31
  */
 
-namespace Inhere\Pool\Raw\Client;
+namespace Toolkit\Pool\Raw\Client;
 
 /**
  * Class MySqlPool
- * @package Inhere\Pool\Raw\Client
+ * @package Toolkit\Pool\Raw\Client
  */
 class MySqlPool
 {

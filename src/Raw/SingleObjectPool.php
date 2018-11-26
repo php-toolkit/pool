@@ -6,11 +6,11 @@
  * Time: 10:06
  */
 
-namespace Inhere\Pool\Raw\Raw;
+namespace Toolkit\Pool\Raw\Raw;
 
 /**
  * Class SingleObjectPool - 只管理一个类的对象池
- * @package Inhere\Pool\Raw\Raw
+ * @package Toolkit\Pool\Raw\Raw
  */
 class SingleObjectPool
 {

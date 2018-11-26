@@ -6,7 +6,7 @@
  * Time: 下午7:17
  */
 
-namespace Inhere\Pool;
+namespace Toolkit\Pool;
 
 /**
  * Class UnlimitedPool - 无(大小)限制的资源池，没有资源就创建
