@@ -8,7 +8,7 @@
 
 namespace Toolkit\Pool\Raw;
 
-use Toolkit\Pool\AbstractPool;
+use Toolkit\Pool\SPLQueuePool;
 
 /**
  * Class ResourcePool - 资源池
@@ -37,7 +37,7 @@ use Toolkit\Pool\AbstractPool;
  *
  * @package Toolkit\Pool\Raw
  */
-class ResourcePool extends AbstractPool
+class ResourcePool extends SPLQueuePool
 {
     /**
      * 资源创建者

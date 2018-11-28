@@ -8,8 +8,8 @@
 
 namespace Toolkit\Pool\Raw;
 
-use Toolkit\Pool\AbstractPool;
 use Toolkit\Pool\FactoryInterface;
+use Toolkit\Pool\SPLQueuePool;
 
 /**
  * Class ResourcePool2
@@ -23,7 +23,7 @@ use Toolkit\Pool\FactoryInterface;
  *
  * @package Toolkit\Pool\Raw
  */
-class Resource2Pool extends AbstractPool
+class Resource2Pool extends SPLQueuePool
 {
     /**
      * @var FactoryInterface

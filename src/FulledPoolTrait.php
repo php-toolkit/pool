@@ -14,8 +14,6 @@ namespace Toolkit\Pool;
  */
 trait FulledPoolTrait
 {
-    use BasePoolTrait;
-
     /**
      * @var int Minimum free/idle connection. 最小空闲连接
      */
@@ -71,22 +69,6 @@ trait FulledPoolTrait
     public function setMaxIdle(int $maxIdle)
     {
         $this->maxIdle = $maxIdle;
-    }
-
-    /**
-     * @return int
-     */
-    public function getWaitTimeout(): int
-    {
-        return $this->waitTimeout;
-    }
-
-    /**
-     * @param int $maxWait
-     */
-    public function setWaitTimeout(int $maxWait)
-    {
-        $this->waitTimeout = $maxWait;
     }
 
     /**

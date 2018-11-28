@@ -25,6 +25,10 @@ interface PoolInterface
      * @param mixed $resource
      */
     public function put($resource);
+    /**
+     * @return int
+     */
+    public function count(): int;
 
     /**
      * Empty the resource pool - Release all connections

@@ -16,8 +16,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
-    "guzzlehttp/promises": "^1.3"
+    "php": ">7.1"
   },
   "require-dev": {
     "swokit/connection-pool": "dev-master"

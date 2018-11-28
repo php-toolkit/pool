@@ -8,6 +8,7 @@
 
 namespace Toolkit\Pool;
 
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -26,22 +27,59 @@ abstract class AbstractPool implements PoolInterface
     protected $name = 'default';
 
     /**
-     * (Free) available resource queue
-     * @var \SplQueue
+     * metadata for connections
+     * @var array[]
+     * [
+     *  'res id' => [
+     *      'createAt' => int,
+     *      'activeAt' => int, // Recent active time - 最近活跃时间
+     *  ]
+     * ]
      */
-    protected $freeQueue;
-
-    /**
-     * (Busy) in use resource
-     * @var \SplObjectStorage
-     */
-    protected $busyQueue;
+    protected $metas = [];
 
     /**
      * default 30 seconds
      * @var int
      */
     protected $expireTime = 30;
+
+    /**
+     * Initialize the pool size
+     * @var int
+     */
+    protected $initSize = 0;
+
+    /**
+     * 扩大的增量(当资源不够时，一次增加资源的数量)
+     * @var int
+     */
+    protected $stepSize = 1;
+
+    /**
+     * The maximum size of the pool resources
+     * @var int
+     */
+    protected $maxSize = 200;
+
+    /**
+     * Maximum waiting time(ms) when get connection. - 获取资源等待超时时间
+     * > 0  waiting time(ms)
+     * 0    Do not wait
+     * -1   Always waiting
+     * @var int
+     */
+    protected $waitTimeout = 3000;
+
+    /**
+     * @var int The max free time(minutes) the free resource - 资源最大生命时长
+     */
+    protected $maxLifetime = 30;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * 自定义的资源配置(创建资源对象时可能会用到 e.g mysql 连接配置)
@@ -73,9 +111,6 @@ abstract class AbstractPool implements PoolInterface
      */
     protected function init()
     {
-        $this->freeQueue = new \SplQueue();
-        $this->busyQueue = new \SplObjectStorage();
-
         // fix mixSize
         if ($this->initSize > $this->maxSize) {
             $this->maxSize = $this->initSize;
@@ -90,65 +125,6 @@ abstract class AbstractPool implements PoolInterface
         if (!$this->logger) {
             $this->logger = new NullLogger();
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     * @return mixed
-     * @throws \RuntimeException
-     */
-    public function get()
-    {
-        // There are also resources available
-        if (!$this->freeQueue->isEmpty()) {
-            $res = $this->freeQueue->pop();
-
-            // add to busy pool
-            $this->busyQueue->attach($res);
-
-            return $res;
-        }
-
-        // No available free resources, and the resource pool is full. waiting ...
-        if (!$this->hasFree() && ($this->count() >= $this->maxSize)) {
-            if ($this->waitTimeout === 0) {
-                // return null;
-                throw new \RuntimeException(
-                    "Server busy, no resources available.(The pool has been overflow max value: {$this->maxSize})"
-                );
-            }
-
-            $res = $this->wait();
-
-            // No resources available, resource pool is not full
-        } else {
-            // create new resource
-            $this->prepare($this->stepSize);
-            $res = $this->freeQueue->pop();
-        }
-
-        // add to busy pool
-        $this->busyQueue->attach($res);
-
-        return $res;
-    }
-
-    /**
-     * 等待并返回可用资源
-     * @return bool|mixed
-     */
-    abstract protected function wait();
-
-    /**
-     * {@inheritdoc}
-     */
-    public function put($resource)
-    {
-        // remove from busy queue
-        $this->busyQueue->detach($resource);
-
-        // push to free queue
-        $this->freeQueue->push($resource);
     }
 
     /**
@@ -172,17 +148,7 @@ abstract class AbstractPool implements PoolInterface
      */
     protected function prepare(int $size): int
     {
-        if ($size <= 0) {
-            return 0;
-        }
-
-        for ($i = 0; $i < $size; $i++) {
-            $res = $this->create();
-            // var_dump($i, $size, $res);
-            $this->getFreeQueue()->push($res);
-        }
-
-        return $size;
+        return 0;
     }
 
     /**
@@ -221,6 +187,7 @@ abstract class AbstractPool implements PoolInterface
      */
     protected function expire($obj)
     {
+        // TODO ..
     }
 
     /**
@@ -231,62 +198,6 @@ abstract class AbstractPool implements PoolInterface
     abstract protected function validate($obj): bool;
 
     /**
-     * @return int
-     */
-    public function count(): int
-    {
-        return \count($this->busyQueue) + \count($this->freeQueue);
-    }
-
-    /**
-     * @return int
-     */
-    public function freeCount(): int
-    {
-        return $this->freeQueue->count();
-    }
-
-    /**
-     * @return int
-     */
-    public function busyCount(): int
-    {
-        return $this->busyQueue->count();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasFree(): bool
-    {
-        return $this->freeQueue->count() > 0;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBusy(): bool
-    {
-        return $this->busyQueue->count() > 0;
-    }
-
-    /**
-     * release pool
-     */
-    public function clear()
-    {
-        // clear free queue
-        while ($obj = $this->getFreeQueue()->pop()) {
-            $this->destroy($obj);
-        }
-
-        $this->busyQueue->removeAll($this->busyQueue);
-
-        $this->freeQueue = null;
-        $this->busyQueue = null;
-    }
-
-    /**
      * release pool
      */
     public function __destruct()
@@ -295,35 +206,129 @@ abstract class AbstractPool implements PoolInterface
     }
 
     /**
-     * @return \SplQueue
+     * @return string
      */
-    public function getFreeQueue(): \SplQueue
+    public function getName(): string
     {
-        return $this->freeQueue;
+        return $this->name;
     }
 
     /**
-     * @param \SplQueue $freeQueue
+     * @return int
      */
-    public function setFreeQueue(\SplQueue $freeQueue)
+    public function getInitSize(): int
     {
-        $this->freeQueue = $freeQueue;
+        return $this->initSize;
     }
 
     /**
-     * @return \SplObjectStorage
+     * @param int $initSize
      */
-    public function getBusyQueue(): \SplObjectStorage
+    public function setInitSize(int $initSize)
     {
-        return $this->busyQueue;
+        $this->initSize = $initSize < 0 ? 0 : $initSize;
     }
 
     /**
-     * @param \SplObjectStorage $busyQueue
+     * @return int
      */
-    public function setBusyQueue(\SplObjectStorage $busyQueue)
+    public function getStepSize(): int
     {
-        $this->busyQueue = $busyQueue;
+        return $this->stepSize;
+    }
+
+    /**
+     * @param int $stepSize
+     */
+    public function setStepSize(int $stepSize)
+    {
+        $this->stepSize = $stepSize < 1 ? 1 : $stepSize;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxSize(): int
+    {
+        return $this->maxSize;
+    }
+
+    /**
+     * @param int $maxSize
+     * @throws \InvalidArgumentException
+     */
+    public function setMaxSize(int $maxSize)
+    {
+        if ($maxSize < 1) {
+            throw new \InvalidArgumentException('The resource pool max size cannot lt 1');
+        }
+
+        $this->maxSize = $maxSize;
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxLifetime(): int
+    {
+        return $this->maxLifetime;
+    }
+
+    /**
+     * @param int $maxLifetime
+     */
+    public function setMaxLifetime(int $maxLifetime)
+    {
+        $this->maxLifetime = $maxLifetime;
+    }
+
+    /**
+     * @param string $resId
+     * @return array
+     */
+    public function getMeta(string $resId): array
+    {
+        return $this->metas[$resId] ?? [];
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getMetas(): array
+    {
+        return $this->metas;
+    }
+
+    /**
+     * @param int $maxWait
+     */
+    public function setWaitTimeout(int $maxWait)
+    {
+        $this->waitTimeout = $maxWait;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWaitTimeout(): int
+    {
+        return $this->waitTimeout;
     }
 
     /**

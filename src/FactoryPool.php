@@ -12,7 +12,7 @@ namespace Toolkit\Pool;
  * Class ConnectionPool
  * @package Toolkit\Pool
  */
-class FactoryPool extends AbstractPool
+class FactoryPool extends SPLQueuePool
 {
     /**
      * @var FactoryInterface
