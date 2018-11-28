@@ -198,6 +198,14 @@ abstract class AbstractPool implements PoolInterface
     abstract protected function validate($obj): bool;
 
     /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return $this->getFreeCount() + $this->getBusyCount();
+    }
+
+    /**
      * release pool
      */
     public function __destruct()

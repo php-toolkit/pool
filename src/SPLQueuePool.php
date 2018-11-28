@@ -132,19 +132,10 @@ abstract class SPLQueuePool extends AbstractPool
         $this->busyQueue = null;
     }
 
-
     /**
      * @return int
      */
-    public function count(): int
-    {
-        return \count($this->busyQueue) + \count($this->freeQueue);
-    }
-
-    /**
-     * @return int
-     */
-    public function freeCount(): int
+    public function getFreeCount(): int
     {
         return $this->freeQueue->count();
     }
@@ -152,7 +143,7 @@ abstract class SPLQueuePool extends AbstractPool
     /**
      * @return int
      */
-    public function busyCount(): int
+    public function getBusyCount(): int
     {
         return $this->busyQueue->count();
     }
