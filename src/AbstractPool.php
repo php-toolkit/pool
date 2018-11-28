@@ -146,10 +146,7 @@ abstract class AbstractPool implements PoolInterface
      * @param int $size
      * @return int
      */
-    protected function prepare(int $size): int
-    {
-        return 0;
-    }
+    abstract protected function prepare(int $size): int;
 
     /**
      * @param mixed $obj
